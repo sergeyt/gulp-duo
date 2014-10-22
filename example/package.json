@@ -1,0 +1,12 @@
+{
+  "name": "gulp-duo-example",
+  "version": "0.0.0",
+  "author": "Sergey Todyshev <stodyshev@gmail.com>",
+  "devDependencies": {
+    "coffee-script": "^1.8.0",
+    "gulp": "^3.8.9",
+    "gulp-coffee": "^2.2.0",
+    "gulp-less": "^1.3.6",
+    "gulp-rename": "^1.2.0"
+  }
+}

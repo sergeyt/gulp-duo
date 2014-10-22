@@ -1,16 +1,3 @@
-# gulp-duo
-
-[Gulp](https://github.com/gulpjs/gulp) plugin to easily run [duo](https://github.com/duojs/duo)
-
-## Install
-
-```
-npm install gulp-duo
-```
-
-## Usage
-
-```coffeescript
 gulp = require 'gulp'
 
 # gulp plugins
@@ -36,4 +23,3 @@ gulp.task 'scripts', () ->
     .pipe duo()
     .pipe rename 'app.js'
     .pipe out()
-```

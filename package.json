@@ -1,0 +1,28 @@
+{
+  "name": "gulp-duo",
+  "description": "Gulp plugin to run duo",
+  "version": "0.1.0",
+  "homepage": "http://github.com/sergeyt/gulp-duo",
+  "repository": "git://github.com/sergeyt/gulp-duo.git",
+  "author": "Sergey Todyshev <stodyshev@gmail.com>",
+  "main": "./index.js",
+  "keywords": [
+    "gulp",
+    "plugin"
+  ],
+  "dependencies": {
+    "map-stream": "^0.1.0",
+    "duo": "^0.8.5",
+    "duo-gulp": "0.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/sergeyt/gulp-duo/raw/master/LICENSE"
+    }
+  ]
+}
