@@ -1,46 +1,68 @@
 var map = require('map-stream');
 var Duo = require('duo');
-var duoize = require('duo-gulp');
 
 module.exports = function() {
-  var duoPlugins = [].slice.call(arguments);
-  return map(function(file, cb) {
+  var plugins = [].slice.call(arguments);
+  var opts = {};
 
-    var duo = Duo(file.base).entry(file.path);
+  if (plugins.length > 0 && typeof plugins[0] == "object") {
+    opts = plugins[0];
+    plugins = plugins.slice(1);
+  }
 
-    function usePlugin(plugin) {
-      duo = duo.use(plugin);
-      return duo;
-    }
+  // TODO load opts.plugins
+  // if (typeof opts.plugins == "object") {
+  //   var plugs = Object.keys(opts.plugins).map(function(name){
+  //     var po = opts.plugins[name];
+  //     return require(name)(po);
+  //   });
+  //   plugins = plugs.concat(plugins);
+  // }
 
-    // use duo plugins first
-    duoPlugins.forEach(usePlugin);
+  return function() {
+    return map(function(file, cb) {
+      var duo = Duo(file.base).entry(file.path);
 
-    // load gulp plugins
-    loadPlugins().forEach(usePlugin);
+      setOptions(duo, opts);
 
-    return duo.run(function(err, src) {
-        if (err) return cb(err, null);
-        file.contents = new Buffer(src, 'utf8');
-        return cb(null, file);
+      plugins.forEach(function(plugin) {
+        duo = duo.use(plugin);
+      });
+
+      return duo.run(function(err, src) {
+          if (err) return cb(err, null);
+          file.contents = new Buffer(src, 'utf8');
+          return cb(null, file);
+      });
     });
-  });
+  };
 };
 
-function loadPlugins() {
-  // TODO add more plugins, dynamic load
-  return [
-    {name: 'gulp-coffee', pat: '*.coffee'},
-    {name: 'gulp-less', pat: '*.less'},
-    {name: 'gulp-sass', pat: '*.scc'}
-  ].map(function(it) {
-    try {
-      var fn = require(it.name);
-      return duoize(it.pat, fn)();
-    } catch (err) {
-      return null;
-    }
-  }).filter(function(f) {
-    return f != null;
+// https://github.com/duojs/duo/blob/master/docs/api.md
+function setOptions(duo, opts) {
+  if (!!opts.dev || !!opts.development) {
+    duo = duo.development(true);
+  }
+
+  if (!!opts.copy) {
+    duo = duo.copy(true);
+  }
+
+  // TODO support CSV string value
+  (opts.globals || []).forEach(function(name){
+    duo = duo.global(name);
   });
+
+  if (typeof opts.concurrency !== "undefined") {
+    duo = duo.concurrency(opts.concurrency);
+  }
+
+  // github token
+  if (typeof opts.token !== "undefined") {
+    duo = duo.token(opts.token);
+  }
+
+  // TODO buildTo, includes, path, installPath, buildPath
+
+  return duo;
 }

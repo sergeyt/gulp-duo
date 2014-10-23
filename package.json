@@ -8,12 +8,14 @@
   "main": "./index.js",
   "keywords": [
     "gulp",
-    "plugin"
+    "gulpjs",
+    "plugin",
+    "duo",
+    "duojs"
   ],
   "dependencies": {
     "map-stream": "^0.1.0",
-    "duo": "^0.8.5",
-    "duo-gulp": "0.0.1"
+    "duo": "^0.8.5"
   },
   "devDependencies": {},
   "scripts": {
