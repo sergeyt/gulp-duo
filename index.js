@@ -10,14 +10,14 @@ module.exports = function() {
     plugins = plugins.slice(1);
   }
 
-  // TODO load opts.plugins
-  // if (typeof opts.plugins == "object") {
-  //   var plugs = Object.keys(opts.plugins).map(function(name){
-  //     var po = opts.plugins[name];
-  //     return require(name)(po);
-  //   });
-  //   plugins = plugs.concat(plugins);
-  // }
+  // TODO should support array form?
+  if (typeof opts.plugins == "object") {
+    var plugs = Object.keys(opts.plugins).map(function(name){
+      var po = opts.plugins[name];
+      return require(name)(po);
+    });
+    plugins = plugs.concat(plugins);
+  }
 
   return function() {
     return map(function(file, cb) {

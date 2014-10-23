@@ -17,7 +17,9 @@
     "map-stream": "^0.1.0",
     "duo": "^0.8.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "duo-coffee-script": "0.0.2"
+  },
   "scripts": {
     "test": "mocha"
   },

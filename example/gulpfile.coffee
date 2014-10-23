@@ -5,13 +5,13 @@ rename = require 'gulp-rename'
 less = require 'gulp-less'
 
 # duo with plugins
-# duo = require('../index.js')({
-#   plugins:
-#     'duo-coffee-script': {}
-# })
-duo = require('../index.js')(
-  require('duo-coffee-script')({})
-)
+duo = require('../index.js')({
+  plugins:
+    'duo-coffee-script': {}
+})
+# duo = require('../index.js')(
+#   require('duo-coffee-script')({})
+# )
 
 # flush result to build dir
 out = () -> gulp.dest('./build/')

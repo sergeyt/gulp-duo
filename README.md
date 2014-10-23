@@ -16,7 +16,10 @@ gulp = require 'gulp'
 # gulp plugins
 rename = require 'gulp-rename'
 less = require 'gulp-less'
-duo = require '../index.js'
+duo = require('gulp-duo')({
+  plugins:
+    'duo-coffee-script': {} # set gulp-coffe options
+})
 
 # flush result to build dir
 out = () -> gulp.dest('./build/')
