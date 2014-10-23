@@ -1,7 +1,7 @@
 {
   "name": "gulp-duo",
   "description": "Gulp plugin to run duo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "http://github.com/sergeyt/gulp-duo",
   "repository": "git://github.com/sergeyt/gulp-duo.git",
   "author": "Sergey Todyshev <stodyshev@gmail.com>",
