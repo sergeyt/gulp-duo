@@ -47,28 +47,34 @@ function setOptions(duo, opts) {
     duo = duo.development(true);
   }
 
+  if (!!opts.sourcemap) {
+    duo = duo.sourcemap(opts.sourcemap);
+  }
+
+  if (!!opts.cache) {
+    duo = duo.cache(true);
+  }
+
   if (!!opts.copy) {
     duo = duo.copy(true);
   }
 
-  // Set location to install components to
-  if (!!opts.installTo) {
-    duo = duo.installTo(opts.installTo);
-  }
-
-  // Set location to copy assets to
-  // TODO nests assets incorrectly
-  if (!!opts.buildTo) {
-    duo = duo.buildTo(opts.buildTo);
-  }
-
   // TODO support CSV string value
-  (opts.globals || []).forEach(function(name){
+  (opts.globals || []).forEach(function(name) {
     duo = duo.global(name);
   });
 
   if (typeof opts.concurrency !== "undefined") {
     duo = duo.concurrency(opts.concurrency);
+  }
+
+  if (!!opts.installTo) {
+    duo = duo.installTo(opts.installTo);
+  }
+
+  // TODO nests assets incorrectly, doesn't update paths correctly
+  if (!!opts.buildTo) {
+    duo = duo.buildTo(opts.buildTo);
   }
 
   // github token
