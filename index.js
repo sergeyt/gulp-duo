@@ -21,10 +21,7 @@ module.exports = function() {
 
   return function() {
     return map(function(file, cb) {
-
-      // Start Duo from root
-      // https://github.com/duojs/duo/issues/357
-      var duo = Duo(process.cwd()).entry(file.path);
+      var duo = Duo(file.base).entry(file.path);
 
       setOptions(duo, opts);
 
@@ -47,34 +44,17 @@ function setOptions(duo, opts) {
     duo = duo.development(true);
   }
 
-  if (!!opts.sourcemap) {
-    duo = duo.sourcemap(opts.sourcemap);
-  }
-
-  if (!!opts.cache) {
-    duo = duo.cache(true);
-  }
-
   if (!!opts.copy) {
     duo = duo.copy(true);
   }
 
   // TODO support CSV string value
-  (opts.globals || []).forEach(function(name) {
+  (opts.globals || []).forEach(function(name){
     duo = duo.global(name);
   });
 
   if (typeof opts.concurrency !== "undefined") {
     duo = duo.concurrency(opts.concurrency);
-  }
-
-  if (!!opts.installTo) {
-    duo = duo.installTo(opts.installTo);
-  }
-
-  // TODO nests assets incorrectly, doesn't update paths correctly
-  if (!!opts.buildTo) {
-    duo = duo.buildTo(opts.buildTo);
   }
 
   // github token
