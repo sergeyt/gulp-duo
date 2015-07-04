@@ -21,7 +21,10 @@ module.exports = function() {
 
   return function() {
     return map(function(file, cb) {
-      var duo = Duo(file.base).entry(file.path);
+
+      // Start Duo from root
+      // https://github.com/duojs/duo/issues/357
+      var duo = Duo(process.cwd()).entry(file.path);
 
       setOptions(duo, opts);
 
@@ -46,6 +49,17 @@ function setOptions(duo, opts) {
 
   if (!!opts.copy) {
     duo = duo.copy(true);
+  }
+
+  // Set location to install components to
+  if (!!opts.installTo) {
+    duo = duo.installTo(opts.installTo);
+  }
+
+  // Set location to copy assets to
+  // TODO nests assets incorrectly
+  if (!!opts.buildTo) {
+    duo = duo.buildTo(opts.buildTo);
   }
 
   // TODO support CSV string value
