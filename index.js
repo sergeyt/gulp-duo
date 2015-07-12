@@ -60,22 +60,11 @@ module.exports = function() {
   var options = false;
   var plugins = false;
 
-  if (args && args.plugins) {
+  if (args && args.plugins instanceof Array) {
     plugins = args.plugins;
   }
   if (args && args.options) {
     options = args.options;
-  }
-
-  /**
-   * TODO What's going on here? Needs documentation!
-   */
-  if (plugins) {
-    var plugs = Object.keys(plugins).map(function(name) {
-      var po = plugins[name];
-      return require(name)(po);
-    });
-    plugins = plugs.concat(plugins);
   }
 
   return function() {
@@ -97,9 +86,9 @@ module.exports = function() {
        * Set plugins to use
        */
       if (plugins) {
-        plugins.forEach(function(plugin) {
-          duo = duo.use(plugin);
-        });
+        for (var i = 0; i < plugins.length; i++) {
+          duo = duo.use(plugins[i]);
+        }
       }
 
       /**
