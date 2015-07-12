@@ -5,51 +5,6 @@ var map = require('map-stream');
 var Duo = require('duo');
 
 /**
- * Options
- *
- * see: https://github.com/duojs/duo/blob/master/docs/api.md
- */
-function setOptions(duo, options) {
-  if (!!options.dev || !!options.development) {
-    duo = duo.development(true);
-  }
-
-  if (!!options.sourcemap) {
-    duo = duo.sourcemap(options.sourcemap);
-  }
-
-  if (!!options.cache) {
-    duo = duo.cache(true);
-  }
-
-  if (!!options.copy) {
-    duo = duo.copy(true);
-  }
-
-  if (!!options.standalone) {
-    duo = duo.standalone(options.standalone);
-  }
-
-  if (typeof options.concurrency !== 'undefined') {
-    duo = duo.concurrency(options.concurrency);
-  }
-
-  if (!!options.installTo) {
-    duo = duo.installTo(options.installTo);
-  }
-
-  if (!!options.buildTo) {
-    duo = duo.buildTo(options.buildTo);
-  }
-
-  if (typeof options.token !== 'undefined') {
-    duo = duo.token(options.token);
-  }
-
-  return duo;
-}
-
-/**
  * Export
  */
 module.exports = function() {
@@ -63,7 +18,7 @@ module.exports = function() {
   if (args && args.plugins instanceof Array) {
     plugins = args.plugins;
   }
-  if (args && args.options) {
+  if (args && args.options instanceof Object) {
     options = args.options;
   }
 
@@ -77,13 +32,21 @@ module.exports = function() {
 
       /**
        * Set options to use
+       *
+       * See: https://github.com/duojs/duo/blob/master/docs/api.md
        */
       if (options) {
-        setOptions(duo, options);
+        for (var option in options) {
+          if (options.hasOwnProperty(option)) {
+            duo = duo[option](options[option]);
+          }
+        }
       }
 
       /**
        * Set plugins to use
+       *
+       * See: https://github.com/duojs/duo/wiki/Third-Party-Libraries
        */
       if (plugins) {
         for (var i = 0; i < plugins.length; i++) {
