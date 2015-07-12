@@ -1,68 +1,69 @@
+/**
+ * Dependencies
+ */
 var map = require('map-stream');
 var Duo = require('duo');
 
+/**
+ * Export
+ */
 module.exports = function() {
-  var plugins = [].slice.call(arguments);
-  var opts = {};
+  /**
+   * Get and assign any arguments
+   */
+  var args = arguments[0];
+  var options = false;
+  var plugins = false;
 
-  if (plugins.length > 0 && typeof plugins[0] == "object") {
-    opts = plugins[0];
-    plugins = plugins.slice(1);
+  if (args && args.plugins instanceof Array) {
+    plugins = args.plugins;
   }
-
-  // TODO should support array form?
-  if (typeof opts.plugins == "object") {
-    var plugs = Object.keys(opts.plugins).map(function(name){
-      var po = opts.plugins[name];
-      return require(name)(po);
-    });
-    plugins = plugs.concat(plugins);
+  if (args && args.options instanceof Object) {
+    options = args.options;
   }
 
   return function() {
     return map(function(file, cb) {
-      var duo = Duo(file.base).entry(file.path);
 
-      setOptions(duo, opts);
+      /**
+       * Start Duo from process folder and not from where the file's located
+       */
+      var duo = Duo(process.cwd()).entry(file.path);
 
-      plugins.forEach(function(plugin) {
-        duo = duo.use(plugin);
-      });
+      /**
+       * Set options to use
+       *
+       * See: https://github.com/duojs/duo/blob/master/docs/api.md
+       */
+      if (options) {
+        for (var option in options) {
+          if (options.hasOwnProperty(option)) {
+            duo = duo[option](options[option]);
+          }
+        }
+      }
 
+      /**
+       * Set plugins to use
+       *
+       * See: https://github.com/duojs/duo/wiki/Third-Party-Libraries
+       */
+      if (plugins) {
+        for (var i = 0; i < plugins.length; i++) {
+          duo = duo.use(plugins[i]);
+        }
+      }
+
+      /**
+       * Run Duo
+       */
       return duo.run(function(err, src) {
-          if (err) return cb(err, null);
-          file.contents = new Buffer(src, 'utf8');
-          return cb(null, file);
+        if (err) {
+          return cb(err, null);
+        }
+        file.contents = new Buffer(src, 'utf8');
+        return cb(null, file);
       });
     });
   };
 };
-
-// https://github.com/duojs/duo/blob/master/docs/api.md
-function setOptions(duo, opts) {
-  if (!!opts.dev || !!opts.development) {
-    duo = duo.development(true);
-  }
-
-  if (!!opts.copy) {
-    duo = duo.copy(true);
-  }
-
-  // TODO support CSV string value
-  (opts.globals || []).forEach(function(name){
-    duo = duo.global(name);
-  });
-
-  if (typeof opts.concurrency !== "undefined") {
-    duo = duo.concurrency(opts.concurrency);
-  }
-
-  // github token
-  if (typeof opts.token !== "undefined") {
-    duo = duo.token(opts.token);
-  }
-
-  // TODO buildTo, includes, path, installPath, buildPath
-
-  return duo;
-}
